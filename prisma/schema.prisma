@@ -12,16 +12,17 @@ model Post {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   content   String
+  imageUrl  String? 
   published Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  comments  Comment[] // A post can have many comments
+  comments  Comment[] 
 }
 
 model Comment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   text      String
-  author    String   // We'll keep it simple with just a name
+  author    String   
   createdAt DateTime @default(now())
 
   post      Post     @relation(fields: [postId], references: [id])
