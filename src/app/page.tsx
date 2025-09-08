@@ -40,7 +40,7 @@ export default function HomePage() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <header className="text-center mb-16">
         <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-          Hi, I'm David Samora
+          Hi, I&apos;m David Samora
         </h1>
         <p className="mt-4 text-lg text-gray-500">Welcome to my space, where I share my thoughts and experiences in the form of motivational quotes.</p>
       </header>
