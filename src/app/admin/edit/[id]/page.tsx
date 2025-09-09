@@ -10,10 +10,9 @@ interface Comment { id: string; author: string; text: string; createdAt: string;
 interface Post { title: string; content: string; published: boolean; imageUrl: string | null; comments: Comment[]; }
 
 // Correctly define the page's props
+// Define the page's props for a Client Component
 interface EditPageProps {
-  params: {
-    id: string;
-  };
+  params: { id: string }; // params is a direct object, not a Promise
 }
 
 export default function EditPostPage({ params }: EditPageProps) {
