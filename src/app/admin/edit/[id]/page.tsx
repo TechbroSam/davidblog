@@ -6,21 +6,8 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
 
-// Define the types for our data
-interface Comment {
-  id: string;
-  author: string;
-  text: string;
-  createdAt: string;
-}
-
-interface Post {
-  title: string;
-  content: string;
-  published: boolean;
-  imageUrl: string | null;
-  comments: Comment[];
-}
+interface Comment { id: string; author: string; text: string; createdAt: string; }
+interface Post { title: string; content: string; published: boolean; imageUrl: string | null; comments: Comment[]; }
 
 // Correctly define the page's props
 interface EditPageProps {
@@ -60,8 +47,7 @@ export default function EditPostPage({ params }: EditPageProps) {
     e.preventDefault();
     if (!post) return;
     setIsLoading(true);
-
-    let imageUrl = post.imageUrl;
+    let imageUrlToUpdate = post.imageUrl;
 
     if (imageFile) {
       const formData = new FormData();
@@ -69,7 +55,7 @@ export default function EditPostPage({ params }: EditPageProps) {
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
       if (res.ok) {
         const data = await res.json();
-        imageUrl = data.url;
+        imageUrlToUpdate = data.url;
       } else {
         alert('Image upload failed.');
         setIsLoading(false);
@@ -81,7 +67,7 @@ export default function EditPostPage({ params }: EditPageProps) {
       const res = await fetch(`/api/admin/posts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...post, imageUrl }),
+        body: JSON.stringify({ ...post, imageUrl: imageUrlToUpdate }),
       });
       if (res.ok) router.push('/admin');
     } catch (error) {
@@ -106,61 +92,42 @@ export default function EditPostPage({ params }: EditPageProps) {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Edit Post</h1>
-        <button onClick={() => router.push('/admin')} className="text-sm text-gray-600 hover:underline">
-          &larr; Back to Dashboard
-        </button>
-      </div>
-
+      <h1 className="text-3xl font-bold mb-8">Edit Post</h1>
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow-md">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium">Title</label>
-          <input id="title" name="title" type="text" value={post.title} onChange={handleFormChange} required className="mt-1 block w-full rounded-md border-gray-300" />
+          <label htmlFor="title">Title</label>
+          <input id="title" name="title" type="text" value={post.title} onChange={handleFormChange} required />
         </div>
         <div>
-          <label className="block text-sm font-medium">Featured Image</label>
+          <label>Featured Image</label>
           {post.imageUrl && (
-            <div className="mt-2 relative w-48 h-32 rounded-md overflow-hidden">
+            <div className="mt-2 relative w-48 h-32">
               <Image src={post.imageUrl} alt="Current image" fill className="object-cover" />
             </div>
           )}
-          <input id="image" type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} className="mt-2 block w-full text-sm text-gray-500" />
+          <input id="image" type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} />
         </div>
         <div>
-          <label htmlFor="content" className="block text-sm font-medium">Content</label>
-          <textarea id="content" name="content" value={post.content} onChange={handleFormChange} required rows={10} className="mt-1 block w-full rounded-md border-gray-300" />
+          <label htmlFor="content">Content</label>
+          <textarea id="content" name="content" value={post.content} onChange={handleFormChange} required rows={10} />
         </div>
-        <div className="flex items-center">
-          <input id="published" name="published" type="checkbox" checked={post.published} onChange={handleFormChange} className="h-4 w-4 rounded border-gray-300" />
-          <label htmlFor="published" className="ml-2 block text-sm">Publish post</label>
+        <div>
+          <input id="published" name="published" type="checkbox" checked={post.published} onChange={handleFormChange} />
+          <label htmlFor="published">Publish post</label>
         </div>
-        <button type="submit" disabled={isLoading} className="w-full bg-orange-700 text-white py-2 rounded-md disabled:bg-gray-400">
-          {isLoading ? 'Updating...' : 'Update Post'}
-        </button>
+        <button type="submit" disabled={isLoading}>{isLoading ? 'Updating...' : 'Update Post'}</button>
       </form>
       
       <div className="mt-12">
-        <h2 className="text-2xl font-bold border-t pt-8">Comments on this Post</h2>
-        <div className="mt-6 space-y-6 bg-white p-6 rounded-lg shadow-md">
-          {post.comments && post.comments.length > 0 ? (
-            post.comments.map((comment) => (
-              <div key={comment.id} className="border-b pb-4 last:border-b-0">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-semibold">{comment.author}</p>
-                    <p className="text-xs text-gray-400">{new Date(comment.createdAt).toLocaleString('en-GB')}</p>
-                    <p className="mt-2 text-gray-700">{comment.text}</p>
-                  </div>
-                  <button onClick={() => handleDeleteComment(comment.id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete comment">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No comments on this post yet.</p>
-          )}
+        <h2 className="text-2xl font-bold">Comments</h2>
+        <div>
+          {post.comments?.map((comment) => (
+            <div key={comment.id}>
+              <p>{comment.author}</p>
+              <p>{comment.text}</p>
+              <button onClick={() => handleDeleteComment(comment.id)}><Trash2 /></button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
