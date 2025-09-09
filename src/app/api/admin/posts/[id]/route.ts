@@ -9,15 +9,14 @@ const prisma = new PrismaClient();
 // GET a single post by ID
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // Change to Promise
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const post = await prisma.post.findUnique({ where: { id: params.id },
-      include: { comments: { orderBy: { createdAt: 'desc' } } }, // Include all related comments
-    });
+    const awaitedParams = await params; // Await params first
+    const post = await prisma.post.findUnique({ where: { id: awaitedParams.id } }); // Use awaited params
     if (!post) return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     return NextResponse.json({ post });
   } catch (error) {
@@ -28,17 +27,17 @@ export async function GET(
 // UPDATE a post by ID
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // Change to Promise
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    // Now expecting an optional imageUrl
-    const { title, content, published, imageUrl } = await request.json();
+    const awaitedParams = await params; // Await params first
+    const { title, content, published } = await request.json();
     const updatedPost = await prisma.post.update({
-      where: { id: params.id },
-      data: { title, content, published, imageUrl },
+      where: { id: awaitedParams.id }, // Use awaited params
+      data: { title, content, published },
     });
     return NextResponse.json({ post: updatedPost });
   } catch (error) {
@@ -49,14 +48,24 @@ export async function PUT(
 // DELETE a post by ID
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // Change to Promise
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    await prisma.comment.deleteMany({ where: { postId: params.id } });
-    await prisma.post.delete({ where: { id: params.id } });
+    const awaitedParams = await params; // Await params first
+    
+    // First, delete all comments associated with the post
+    await prisma.comment.deleteMany({
+      where: { postId: awaitedParams.id }, // Use awaited params
+    });
+    
+    // Then, delete the post itself
+    await prisma.post.delete({
+      where: { id: awaitedParams.id }, // Use awaited params
+    });
+    
     return NextResponse.json({ message: 'Post deleted successfully' });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete post' }, { status: 500 });

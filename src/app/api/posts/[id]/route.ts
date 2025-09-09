@@ -4,16 +4,14 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-
-
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // Note the Promise wrapper
 ) {
   try {
+    const awaitedParams = await params; // Await the params first
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
-      include: { comments: true },
+      where: { id: awaitedParams.id }, // Use the awaited params
     });
 
     if (!post) {

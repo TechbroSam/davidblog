@@ -1,7 +1,8 @@
 // src/app/posts/[id]/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import CommentForm from '@/components/CommentForm';
@@ -18,21 +19,23 @@ interface Post {
   title: string;
   content: string;
   createdAt: string;
-  comments: Comment[];
+  comments?: Comment[]; // Make comments optional
   imageUrl?: string | null;
 }
 
 interface PostPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default function PostPage({ params }: PostPageProps) {
+  const { id } = use(params);
   const [post, setPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const res = await fetch(`/api/posts/${params.id}`);
+      const res = await fetch(`/api/posts/${id}`);
       if (!res.ok) throw new Error('Post not found');
       const data = await res.json();
       setPost(data.post);
@@ -41,30 +44,32 @@ export default function PostPage({ params }: PostPageProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchPost();
-  }, [params.id]);
+  }, [fetchPost]);
 
   if (isLoading) return <p className="text-center py-20">Loading post...</p>;
   if (!post) return <p className="text-center py-20">Post not found.</p>;
+
+  // Safely get comments array (fallback to empty array if undefined)
+  const comments = post.comments || [];
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
       <header className="mb-8">
         <Link href="/" className="text-orange-700 hover:underline mb-6 inline-block">&larr; Back to all posts</Link>
-          {/* Conditionally render the image if it exists */}
         {post.imageUrl && (
-            <div className="relative h-80 w-full mb-8 rounded-lg overflow-hidden">
-                <Image
-                    src={post.imageUrl}
-                    alt={post.title}
-                    fill
-                    className="object-cover"
-                    priority
-                />
-            </div>
+          <div className="relative h-80 w-full mb-8 rounded-lg overflow-hidden">
+            <Image
+              src={post.imageUrl}
+              alt={post.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
         )}
         <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">{post.title}</h1>
         <p className="mt-4 text-sm text-gray-400">
@@ -79,9 +84,10 @@ export default function PostPage({ params }: PostPageProps) {
       </main>
       
       <section id="comments">
-        <h2 className="text-2xl font-bold mb-6">Comments ({post.comments.length})</h2>
+        {/* Safely access comments length */}
+        <h2 className="text-2xl font-bold mb-6">Comments ({comments.length})</h2>
         <div className="space-y-6">
-          {post.comments.map((comment) => (
+          {comments.map((comment) => (
             <div key={comment.id} className="border-l-4 border-orange-100 pl-4">
               <p className="font-semibold">{comment.author}</p>
               <p className="text-gray-600 my-1">{comment.text}</p>

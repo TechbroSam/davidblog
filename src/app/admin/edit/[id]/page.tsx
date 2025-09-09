@@ -1,7 +1,8 @@
 // src/app/admin/edit/[id]/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { use } from 'react'; // Import the use hook
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
@@ -22,26 +23,27 @@ interface Post {
   comments: Comment[];
 }
 
-export default function EditPostPage({ params }: { params: { id: string } }) {
-  // Use a single state object for the post data
+export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) { // Change to Promise
+  // Use the use hook to unwrap params
+  const { id } = use(params); // Unwrap params with use()
+  
   const [post, setPost] = useState<Post | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { id } = params;
 
   // Function to fetch the post and its comments
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     const res = await fetch(`/api/admin/posts/${id}`);
     if (res.ok) {
       const data = await res.json();
       setPost(data.post);
     }
-  };
+  }, [id]); // Now depends on the resolved id
 
   useEffect(() => {
     fetchPost();
-  }, [id]);
+  }, [fetchPost]);
 
   // Handle changes to the form fields
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -71,7 +73,7 @@ export default function EditPostPage({ params }: { params: { id: string } }) {
     }
 
     try {
-      const res = await fetch(`/api/admin/posts/${id}`, {
+      const res = await fetch(`/api/admin/posts/${id}`, { // Use the resolved id
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...post, imageUrl }),
