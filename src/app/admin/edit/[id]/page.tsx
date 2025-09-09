@@ -6,13 +6,31 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
 
-interface Comment { id: string; author: string; text: string; createdAt: string; }
-interface Post { title: string; content: string; published: boolean; imageUrl: string | null; comments: Comment[]; }
+// Define the types for our data
+interface Comment {
+  id: string;
+  author: string;
+  text: string;
+  createdAt: string;
+}
 
-interface EditPageProps { params: { id: string }; }
+interface Post {
+  title: string;
+  content: string;
+  published: boolean;
+  imageUrl: string | null;
+  comments: Comment[];
+}
+
+// Correctly define the page's props
+interface EditPageProps {
+  params: {
+    id: string;
+  };
+}
 
 export default function EditPostPage({ params }: EditPageProps) {
-  const { id } = params; // Directly access the id
+  const { id } = params;
   const [post, setPost] = useState<Post | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -87,42 +105,61 @@ export default function EditPostPage({ params }: EditPageProps) {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8">Edit Post</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Edit Post</h1>
+        <button onClick={() => router.push('/admin')} className="text-sm text-gray-600 hover:underline">
+          &larr; Back to Dashboard
+        </button>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow-md">
         <div>
-          <label htmlFor="title">Title</label>
-          <input id="title" name="title" type="text" value={post.title} onChange={handleFormChange} required />
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+          <input id="title" name="title" type="text" value={post.title} onChange={handleFormChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
         </div>
         <div>
-          <label>Featured Image</label>
+          <label className="block text-sm font-medium text-gray-700">Featured Image</label>
           {post.imageUrl && (
-            <div className="mt-2 relative w-48 h-32">
+            <div className="mt-2 relative w-48 h-32 rounded-md overflow-hidden">
               <Image src={post.imageUrl} alt="Current image" fill className="object-cover" />
             </div>
           )}
-          <input id="image" type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} />
+          <input id="image" type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100" />
         </div>
         <div>
-          <label htmlFor="content">Content</label>
-          <textarea id="content" name="content" value={post.content} onChange={handleFormChange} required rows={10} />
+          <label htmlFor="content" className="block text-sm font-medium text-gray-700">Content</label>
+          <textarea id="content" name="content" value={post.content} onChange={handleFormChange} required rows={10} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
         </div>
-        <div>
-          <input id="published" name="published" type="checkbox" checked={post.published} onChange={handleFormChange} />
-          <label htmlFor="published">Publish post</label>
+        <div className="flex items-center">
+          <input id="published" name="published" type="checkbox" checked={post.published} onChange={handleFormChange} className="h-4 w-4 rounded border-gray-300 text-orange-600" />
+          <label htmlFor="published" className="ml-2 block text-sm text-gray-900">Publish post</label>
         </div>
-        <button type="submit" disabled={isLoading}>{isLoading ? 'Updating...' : 'Update Post'}</button>
+        <button type="submit" disabled={isLoading} className="w-full bg-orange-700 text-white py-2 rounded-md hover:bg-orange-800 disabled:bg-gray-400">
+          {isLoading ? 'Updating...' : 'Update Post'}
+        </button>
       </form>
       
       <div className="mt-12">
-        <h2 className="text-2xl font-bold">Comments</h2>
-        <div>
-          {post.comments?.map((comment) => (
-            <div key={comment.id}>
-              <p>{comment.author}</p>
-              <p>{comment.text}</p>
-              <button onClick={() => handleDeleteComment(comment.id)}><Trash2 /></button>
-            </div>
-          ))}
+        <h2 className="text-2xl font-bold border-t pt-8">Comments on this Post</h2>
+        <div className="mt-6 space-y-6 bg-white p-6 rounded-lg shadow-md">
+          {post.comments && post.comments.length > 0 ? (
+            post.comments.map((comment) => (
+              <div key={comment.id} className="border-b pb-4 last:border-b-0">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold">{comment.author}</p>
+                    <p className="text-xs text-gray-400">{new Date(comment.createdAt).toLocaleString('en-GB')}</p>
+                    <p className="mt-2 text-gray-700">{comment.text}</p>
+                  </div>
+                  <button onClick={() => handleDeleteComment(comment.id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete comment">
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No comments on this post yet.</p>
+          )}
         </div>
       </div>
     </div>
