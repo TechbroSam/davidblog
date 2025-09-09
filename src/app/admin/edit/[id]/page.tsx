@@ -1,10 +1,10 @@
+// src/app/admin/edit/[id]/page.tsx
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
-import { NextPage } from 'next';
 
 // Define the types for our data
 interface Comment {
@@ -22,40 +22,53 @@ interface Post {
   comments: Comment[];
 }
 
+// Correctly define the page's props with Promise
 interface EditPageProps {
-  params: { id: string };
+  params: Promise<{
+    id: string;
+  }>;
 }
 
-const EditPostPage: NextPage<EditPageProps> = ({ params }) => {
-  const { id } = params;
+export default function EditPostPage({ params }: EditPageProps) {
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const [post, setPost] = useState<Post | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  // Resolve the params promise
+  useEffect(() => {
+    params.then((resolved) => {
+      setResolvedParams(resolved);
+    });
+  }, [params]);
+
   const fetchPost = useCallback(async () => {
-    const res = await fetch(`/api/admin/posts/${id}`);
+    if (!resolvedParams) return;
+    const res = await fetch(`/api/admin/posts/${resolvedParams.id}`);
     if (res.ok) {
       const data = await res.json();
       setPost(data.post);
     }
-  }, [id]);
+  }, [resolvedParams]);
 
   useEffect(() => {
-    fetchPost();
-  }, [fetchPost]);
+    if (resolvedParams) {
+      fetchPost();
+    }
+  }, [resolvedParams, fetchPost]);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const isCheckbox = type === 'checkbox';
-    if (post) {
+    if(post) {
       setPost({ ...post, [name]: isCheckbox ? (e.target as HTMLInputElement).checked : value });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!post) return;
+    if (!post || !resolvedParams) return;
     setIsLoading(true);
     let imageUrlToUpdate = post.imageUrl;
 
@@ -74,7 +87,7 @@ const EditPostPage: NextPage<EditPageProps> = ({ params }) => {
     }
 
     try {
-      const res = await fetch(`/api/admin/posts/${id}`, {
+      const res = await fetch(`/api/admin/posts/${resolvedParams.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...post, imageUrl: imageUrlToUpdate }),
@@ -98,7 +111,7 @@ const EditPostPage: NextPage<EditPageProps> = ({ params }) => {
     }
   };
 
-  if (!post) return <p className="text-center py-20">Loading post...</p>;
+  if (!resolvedParams || !post) return <p className="text-center py-20">Loading post...</p>;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -161,6 +174,4 @@ const EditPostPage: NextPage<EditPageProps> = ({ params }) => {
       </div>
     </div>
   );
-};
-
-export default EditPostPage;
+}
