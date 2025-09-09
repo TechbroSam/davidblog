@@ -9,24 +9,17 @@ export async function GET() {
     const posts = await prisma.post.findMany({
       where: { published: true },
       orderBy: { createdAt: 'desc' },
+      // Select specific fields to include the imageUrl
       select: {
         id: true,
         title: true,
         content: true,
-        imageUrl: true, // This should work according to your schema
+        imageUrl: true,
         createdAt: true,
-        // You can also include comment count if needed
-        _count: {
-          select: {
-            comments: true
-          }
-        }
       }
     });
-    
     return NextResponse.json({ posts });
   } catch (error) {
-    console.error('Failed to fetch posts:', error);
     return NextResponse.json({ error: 'Failed to fetch posts.' }, { status: 500 });
   }
 }
