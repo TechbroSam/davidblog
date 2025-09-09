@@ -20,13 +20,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Title and content are required.' }, { status: 400 });
     }
 
+    // Create the data object conditionally
+    const postData: any = {
+      title,
+      content,
+      published: published || false,
+    };
+
+    // Only include imageUrl if it's provided and not empty
+    if (imageUrl !== undefined && imageUrl !== null && imageUrl !== '') {
+      postData.imageUrl = imageUrl;
+    }
+
     const newPost = await prisma.post.create({
-      data: {
-        title,
-        content,
-        published,
-        imageUrl: imageUrl || null,
-      },
+      data: postData,
     });
 
     return NextResponse.json({ post: newPost }, { status: 201 });
@@ -36,21 +43,21 @@ export async function POST(request: Request) {
   }
 }
 
-// We will also add the GET function here for the admin dashboard
+// GET function for the admin dashboard
 export async function GET() {
-    const session = await getServerSession(authOptions);
-  
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-  
-    try {
-      const posts = await prisma.post.findMany({
-        orderBy: { createdAt: 'desc' },
-      });
-      return NextResponse.json({ posts });
-    } catch (error) {
-      console.error("Failed to fetch posts:", error);
-      return NextResponse.json({ error: 'Failed to fetch posts.' }, { status: 500 });
-    }
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    return NextResponse.json({ posts });
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
+    return NextResponse.json({ error: 'Failed to fetch posts.' }, { status: 500 });
+  }
+}
