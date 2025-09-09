@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -20,16 +20,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Title and content are required.' }, { status: 400 });
     }
 
-    // Create the data object conditionally
-    const postData: any = {
+    // Use Prisma's generated type with proper typing
+    const postData: Prisma.PostCreateInput = {
       title,
       content,
       published: published || false,
+      // imageUrl will be conditionally added below
     };
 
     // Only include imageUrl if it's provided and not empty
     if (imageUrl !== undefined && imageUrl !== null && imageUrl !== '') {
-      postData.imageUrl = imageUrl;
+      // Use type assertion for the conditional field
+      (postData as Prisma.PostCreateInput & { imageUrl?: string }).imageUrl = imageUrl;
     }
 
     const newPost = await prisma.post.create({
