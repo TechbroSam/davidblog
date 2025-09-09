@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { use } from 'react'; // Import the use hook
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
@@ -23,37 +22,37 @@ interface Post {
   comments: Comment[];
 }
 
-export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) { // Change to Promise
-  // Use the use hook to unwrap params
-  const { id } = use(params); // Unwrap params with use()
-  
+// Correctly define the page's props
+interface EditPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function EditPostPage({ params }: EditPageProps) {
+  const { id } = params; // Directly access the id
   const [post, setPost] = useState<Post | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  // Function to fetch the post and its comments
   const fetchPost = useCallback(async () => {
     const res = await fetch(`/api/admin/posts/${id}`);
     if (res.ok) {
       const data = await res.json();
       setPost(data.post);
     }
-  }, [id]); // Now depends on the resolved id
+  }, [id]);
 
   useEffect(() => {
     fetchPost();
   }, [fetchPost]);
 
-  // Handle changes to the form fields
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const isCheckbox = type === 'checkbox';
     if(post) {
-      setPost({
-        ...post,
-        [name]: isCheckbox ? (e.target as HTMLInputElement).checked : value,
-      });
+      setPost({ ...post, [name]: isCheckbox ? (e.target as HTMLInputElement).checked : value });
     }
   };
 
@@ -68,12 +67,18 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
       const formData = new FormData();
       formData.append('file', imageFile);
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      imageUrl = data.url;
+      if (res.ok) {
+        const data = await res.json();
+        imageUrl = data.url;
+      } else {
+        alert('Image upload failed.');
+        setIsLoading(false);
+        return;
+      }
     }
 
     try {
-      const res = await fetch(`/api/admin/posts/${id}`, { // Use the resolved id
+      const res = await fetch(`/api/admin/posts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...post, imageUrl }),
@@ -90,7 +95,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
     if (window.confirm('Are you sure you want to delete this comment?')) {
       const res = await fetch(`/api/admin/comments/${commentId}`, { method: 'DELETE' });
       if (res.ok) {
-        fetchPost(); // Re-fetch the post to refresh the comments list
+        fetchPost();
       } else {
         alert('Failed to delete comment.');
       }
@@ -108,7 +113,6 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
         </button>
       </div>
 
-      {/* Post Edit Form */}
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow-md">
         <div>
           <label htmlFor="title" className="block text-sm font-medium">Title</label>
@@ -136,7 +140,6 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
         </button>
       </form>
       
-      {/* Comments Moderation Section */}
       <div className="mt-12">
         <h2 className="text-2xl font-bold border-t pt-8">Comments on this Post</h2>
         <div className="mt-6 space-y-6 bg-white p-6 rounded-lg shadow-md">
@@ -146,16 +149,10 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold">{comment.author}</p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(comment.createdAt).toLocaleString('en-GB')}
-                    </p>
+                    <p className="text-xs text-gray-400">{new Date(comment.createdAt).toLocaleString('en-GB')}</p>
                     <p className="mt-2 text-gray-700">{comment.text}</p>
                   </div>
-                  <button
-                    onClick={() => handleDeleteComment(comment.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-                    title="Delete comment"
-                  >
+                  <button onClick={() => handleDeleteComment(comment.id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete comment">
                     <Trash2 size={18} />
                   </button>
                 </div>
