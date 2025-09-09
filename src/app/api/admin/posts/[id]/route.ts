@@ -8,9 +8,7 @@ const prisma = new PrismaClient();
 
 // Define the context type for this route
 interface RouteContext {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>; // Update to expect a Promise
 }
 
 // GET a single post by ID
@@ -19,8 +17,9 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
+    const { id } = await params; // Await the params to get the id
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { comments: { orderBy: { createdAt: 'desc' } } },
     });
     if (!post) return NextResponse.json({ error: 'Post not found' }, { status: 404 });
@@ -36,9 +35,10 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
+    const { id } = await params; // Await the params to get the id
     const { title, content, published, imageUrl } = await request.json();
     const updatedPost = await prisma.post.update({
-      where: { id: params.id },
+      where: { id },
       data: { title, content, published, imageUrl },
     });
     return NextResponse.json({ post: updatedPost });
@@ -53,8 +53,9 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    await prisma.comment.deleteMany({ where: { postId: params.id } });
-    await prisma.post.delete({ where: { id: params.id } });
+    const { id } = await params; // Await the params to get the id
+    await prisma.comment.deleteMany({ where: { postId: id } });
+    await prisma.post.delete({ where: { id } });
     return NextResponse.json({ message: 'Post deleted successfully' });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete post' }, { status: 500 });
