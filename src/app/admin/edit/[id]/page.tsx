@@ -1,10 +1,10 @@
-// src/app/admin/edit/[id]/page.tsx
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
+import { NextPage } from 'next';
 
 // Define the types for our data
 interface Comment {
@@ -22,14 +22,11 @@ interface Post {
   comments: Comment[];
 }
 
-// Correctly define the page's props
 interface EditPageProps {
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }
 
-export default function EditPostPage({ params }: EditPageProps) {
+const EditPostPage: NextPage<EditPageProps> = ({ params }) => {
   const { id } = params;
   const [post, setPost] = useState<Post | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -51,7 +48,7 @@ export default function EditPostPage({ params }: EditPageProps) {
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const isCheckbox = type === 'checkbox';
-    if(post) {
+    if (post) {
       setPost({ ...post, [name]: isCheckbox ? (e.target as HTMLInputElement).checked : value });
     }
   };
@@ -164,4 +161,6 @@ export default function EditPostPage({ params }: EditPageProps) {
       </div>
     </div>
   );
-}
+};
+
+export default EditPostPage;
