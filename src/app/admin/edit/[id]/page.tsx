@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
+import { NextPage } from 'next';
 
 interface Comment { id: string; author: string; text: string; createdAt: string; }
 interface Post { title: string; content: string; published: boolean; imageUrl: string | null; comments: Comment[]; }
@@ -15,7 +16,7 @@ interface EditPageProps {
   params: { id: string }; // params is a direct object, not a Promise
 }
 
-export default function EditPostPage({ params }: EditPageProps) {
+const EditPostPage: NextPage<EditPageProps> = ({ params }) => {
   const { id } = params; // Directly access the id
   const [post, setPost] = useState<Post | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -131,4 +132,6 @@ export default function EditPostPage({ params }: EditPageProps) {
       </div>
     </div>
   );
-}
+};
+
+export default EditPostPage;
