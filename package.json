@@ -2,12 +2,12 @@
   "name": "hiimeniola",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "prisma generate && next build--turbopack",
-    "start": "next start",
-    "lint": "eslint"
-  },
+"scripts": {
+  "dev": "next dev --turbopack",
+  "build": "prisma generate && next build",
+  "start": "next start",
+  "lint": "next lint"
+},
   "dependencies": {
     "@prisma/client": "^6.15.0",
     "cloudinary": "^2.7.0",
