@@ -59,7 +59,7 @@ export default function PostPage({ params }: PostPageProps) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
       <header className="mb-8">
-        <Link href="/" className="text-orange-700 hover:underline mb-6 inline-block">&larr; Back to all posts</Link>
+        <Link href="/" className="text-purple-700 hover:underline mb-6 inline-block">&larr; Back to all posts</Link>
         {post.imageUrl && (
           <div className="relative h-80 w-full mb-8 rounded-lg overflow-hidden">
             <Image
@@ -88,7 +88,7 @@ export default function PostPage({ params }: PostPageProps) {
         <h2 className="text-2xl font-bold mb-6">Comments ({comments.length})</h2>
         <div className="space-y-6">
           {comments.map((comment) => (
-            <div key={comment.id} className="border-l-4 border-orange-100 pl-4">
+            <div key={comment.id} className="border-l-4 border-purple-700 p-100 pl-4">
               <p className="font-semibold">{comment.author}</p>
               <p className="text-gray-600 my-1">{comment.text}</p>
               <p className="text-xs text-gray-400">

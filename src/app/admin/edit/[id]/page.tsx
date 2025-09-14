@@ -134,17 +134,17 @@ export default function EditPostPage({ params }: EditPageProps) {
               <Image src={post.imageUrl} alt="Current image" fill className="object-cover" />
             </div>
           )}
-          <input id="image" type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100" />
+          <input id="image" type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100" />
         </div>
         <div>
           <label htmlFor="content" className="block text-sm font-medium text-gray-700">Content</label>
           <textarea id="content" name="content" value={post.content} onChange={handleFormChange} required rows={10} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
         </div>
         <div className="flex items-center">
-          <input id="published" name="published" type="checkbox" checked={post.published} onChange={handleFormChange} className="h-4 w-4 rounded border-gray-300 text-orange-600" />
+          <input id="published" name="published" type="checkbox" checked={post.published} onChange={handleFormChange} className="h-4 w-4 rounded border-gray-300 text-purple-600" />
           <label htmlFor="published" className="ml-2 block text-sm text-gray-900">Publish post</label>
         </div>
-        <button type="submit" disabled={isLoading} className="w-full bg-orange-700 text-white py-2 rounded-md hover:bg-orange-800 disabled:bg-gray-400">
+        <button type="submit" disabled={isLoading} className="w-full bg-purple-700 text-white py-2 rounded-md hover:bg-purple-800 disabled:bg-gray-400">
           {isLoading ? 'Updating...' : 'Update Post'}
         </button>
       </form>

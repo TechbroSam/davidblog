@@ -65,7 +65,7 @@ export default function CommentForm({ postId, onCommentSubmitted }: CommentFormP
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-orange-700 text-white px-6 py-2 rounded-md disabled:bg-gray-400"
+          className="bg-purple-700 text-white px-6 py-2 rounded-md disabled:bg-gray-400"
         >
           {isLoading ? 'Submitting...' : 'Submit Comment'}
         </button>
