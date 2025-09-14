@@ -71,7 +71,7 @@ export default function LoginPage() {
           {error && <p className="text-sm text-red-600">{error}</p>}
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-purple-700 text-white rounded-md hover:bg-purple-800"
+            className="w-full py-2 px-4 bg-green-700 text-white rounded-md hover:bg-green-800"
           >
             Log In
           </button>

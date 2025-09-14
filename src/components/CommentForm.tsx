@@ -48,7 +48,7 @@ export default function CommentForm({ postId, onCommentSubmitted }: CommentFormP
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             required
-            className="mt-1 block w-full rounded-md border-gray-300"
+            className="mt-1 block w-full rounded-md border-gray-300 outline"
           />
         </div>
         <div>
@@ -59,13 +59,13 @@ export default function CommentForm({ postId, onCommentSubmitted }: CommentFormP
             onChange={(e) => setText(e.target.value)}
             required
             rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300"
+            className="mt-1 block w-full rounded-md border-gray-300 outline"
           />
         </div>
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-purple-700 text-white px-6 py-2 rounded-md disabled:bg-gray-400"
+          className="bg-green-700 text-white px-6 py-2 rounded-md disabled:bg-gray-400"
         >
           {isLoading ? 'Submitting...' : 'Submit Comment'}
         </button>

@@ -62,7 +62,7 @@ export default function AdminPage() {
     <div className="mx-auto max-w-4xl px-4 py-12">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <Link href="/admin/create" className="bg-purple-700 text-white px-4 py-2 rounded-md hover:bg-purple-800">
+        <Link href="/admin/create" className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">
           Create New Post
         </Link>
       </div>

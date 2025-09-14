@@ -48,7 +48,7 @@ export default function CreatePostPage() {
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow-md">
         <div>
           <label htmlFor="title" className="block text-sm font-medium">Title</label>
-          <input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300" />
+          <input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required className="mt-1 block w-full rounded-md border-gray-300 outline" />
         </div>
         <div>
           <label htmlFor="image" className="block text-sm font-medium">Featured Image</label>
@@ -57,18 +57,18 @@ export default function CreatePostPage() {
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
           />
         </div>
         <div>
           <label htmlFor="content" className="block text-sm font-medium">Content</label>
-          <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} required rows={10} className="mt-1 block w-full rounded-md border-gray-300" />
+          <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} required rows={10} className="mt-1 block w-full rounded-md border-gray-300 outline" />
         </div>
         <div className="flex items-center">
           <input id="published" type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="h-4 w-4 rounded border-gray-300" />
           <label htmlFor="published" className="ml-2 block text-sm">Publish post</label>
         </div>
-        <button type="submit" disabled={isLoading} className="w-full bg-purple-700 text-white py-2 rounded-md disabled:bg-gray-400">
+        <button type="submit" disabled={isLoading} className="w-full bg-green-700 text-white py-2 rounded-md disabled:bg-gray-400">
           {isLoading ? 'Creating...' : 'Create Post'}
         </button>
       </form>

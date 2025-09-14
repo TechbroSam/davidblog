@@ -68,13 +68,13 @@ export default function HomePage() {
                 <p className="text-sm text-gray-400 mb-2">
                   {new Date(latestPost.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
-                <h3 className="text-3xl font-bold text-gray-800 group-hover:text-purple-700 transition-colors">
+                <h3 className="text-3xl font-bold text-gray-800 group-hover:text-green-700 transition-colors">
                   {latestPost.title}
                 </h3>
                 <p className="text-gray-600 line-clamp-4 mt-4">
                   {latestPost.content}
                 </p>
-                <span className="text-purple-700 font-semibold hover:underline mt-4 inline-block">
+                <span className="text-green-700 font-semibold hover:underline mt-4 inline-block">
                   Read more &rarr;
                 </span>
               </div>
