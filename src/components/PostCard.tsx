@@ -28,7 +28,7 @@ export default function PostCard({ post }: { post: Post }) {
             year: 'numeric', month: 'long', day: 'numeric'
           })}
         </p>
-        <h3 className="text-xl font-bold mt-1 group-hover:text-orange-700 transition-colors">
+        <h3 className="text-xl font-bold mt-1 group-hover:text-orange-700 group-hover:dark:text-orange-400 transition-colors">
           {post.title}
         </h3>
       </Link>

@@ -57,7 +57,7 @@ export default function CreatePostPage() {
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)}
-            className="mt-1 block w-full text-sm  file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+            className="mt-1 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:shadow-md file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-orange-700 hover:file:bg-orange-100"
           />
         </div>
         <div>
@@ -68,7 +68,7 @@ export default function CreatePostPage() {
           <input id="published" type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="h-4 w-4 rounded border-gray-300" />
           <label htmlFor="published" className="ml-2 block text-sm">Publish post</label>
         </div>
-        <button type="submit" disabled={isLoading} className="w-full bg-orange-700 py-2 rounded-md disabled:bg-gray-400">
+        <button type="submit" disabled={isLoading} className="w-full bg-orange-700 py-2 rounded-md disabled:bg-gray-400 text-white!">
           {isLoading ? 'Creating...' : 'Create Post'}
         </button>
       </form>

@@ -62,7 +62,7 @@ export default function AdminPage() {
     <div className="mx-auto max-w-4xl px-4 py-12">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <Link href="/admin/create" className="bg-orange-700 px-4 py-2 rounded-md hover:bg-orange-800">
+        <Link href="/admin/create" className="bg-orange-700 px-4 py-2 rounded-md hover:bg-orange-800 text-white!">
           Create New Post
         </Link>
       </div>
@@ -82,8 +82,8 @@ export default function AdminPage() {
                 </p>
               </div>
               <div className="flex gap-4">
-                <Link href={`/admin/edit/${post.id}`} className="text-blue-600 hover:underline">Edit</Link>
-                <button onClick={() => handleDelete(post.id)} className="text-red-600 hover:underline">Delete</button>
+                <Link href={`/admin/edit/${post.id}`} className="text-blue-600 hover:underline dark:text-blue-400">Edit</Link>
+                <button onClick={() => handleDelete(post.id)} className="text-red-600 hover:underline dark:text-red-400">Delete</button>
               </div>
             </li>
           ))}
