@@ -39,10 +39,10 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <header className="text-center mb-16">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+        <h1 className="text-4xl font-bold tracking-tight  sm:text-5xl">
           Hi, I&apos;m David Samora
         </h1>
-        <p className="mt-4 text-lg text-gray-500">Welcome to my space, where I share my thoughts and experiences in the form of motivational quotes.</p>
+        <p className="mt-4 text-lg text-gray-400 dark:">Welcome to my space, where I share my thoughts and experiences in the form of motivational quotes.</p>
       </header>
       
       <main>
@@ -68,13 +68,13 @@ export default function HomePage() {
                 <p className="text-sm text-gray-400 mb-2">
                   {new Date(latestPost.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
-                <h3 className="text-3xl font-bold text-gray-800 group-hover:text-green-700 transition-colors">
+                <h3 className="text-3xl font-bold  group-hover:text-orange-700 transition-colors">
                   {latestPost.title}
                 </h3>
-                <p className="text-gray-600 line-clamp-4 mt-4">
+                <p className="line-clamp-4 mt-4">
                   {latestPost.content}
                 </p>
-                <span className="text-green-700 font-semibold hover:underline mt-4 inline-block">
+                <span className="text-orange-700 font-semibold hover:underline mt-4 inline-block">
                   Read more &rarr;
                 </span>
               </div>

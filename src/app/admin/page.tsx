@@ -62,21 +62,21 @@ export default function AdminPage() {
     <div className="mx-auto max-w-4xl px-4 py-12">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <Link href="/admin/create" className="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">
+        <Link href="/admin/create" className="bg-orange-700 px-4 py-2 rounded-md hover:bg-orange-800">
           Create New Post
         </Link>
       </div>
       
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">All Posts</h2>
         <ul className="divide-y divide-gray-200">
           {posts.map((post) => (
             <li key={post.id} className="py-4 flex justify-between items-center">
               <div>
                 <p className="font-semibold">{post.title}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-400">
                   {new Date(post.createdAt).toLocaleDateString('en-GB')} - 
-                  <span className={post.published ? 'text-green-600' : 'text-yellow-600'}>
+                  <span className={post.published ? 'text-orange-600' : 'text-yellow-600'}>
                     {post.published ? ' Published' : ' Draft'}
                   </span>
                 </p>

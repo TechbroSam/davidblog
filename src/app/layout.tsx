@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
-import Footer from "@/components/Footer"; 
+import Footer from "@/components/Footer";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import Header from "@/components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,13 +21,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-50`}>
-        <Providers>
-          <div className="flex flex-col min-h-screen">
-            <main className="flex-grow">{children}</main>
-            <Footer /> 
-          </div>
-        </Providers>
+      <body className={`${inter.className}`}>
+        <ThemeProvider
+          attribute="class"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <Providers>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

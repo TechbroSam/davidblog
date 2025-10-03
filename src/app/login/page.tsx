@@ -33,8 +33,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="w-full max-w-md p-8 space-y-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center">Admin Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -71,7 +71,7 @@ export default function LoginPage() {
           {error && <p className="text-sm text-red-600">{error}</p>}
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-green-700 text-white rounded-md hover:bg-green-800"
+            className="w-full py-2 px-4 bg-orange-700 text-white rounded-md hover:bg-orange-800"
           >
             Log In
           </button>
